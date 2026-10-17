@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="MileFund: milestone-based crowdfunding where backers vote before funds are released." />
+    <title>MileFund · Milestone Crowdfunding</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f766e'/%3E%3Cpath d='M8 22l5-6 4 3 7-9' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <script src="/js/vendor/ethers.umd.min.js" defer></script>
+    <script src="/js/app.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="brand" href="#/">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span>MileFund</span>
+        </a>
+        <nav class="nav" aria-label="Main">
+          <a href="#/" data-nav="home">Explore</a>
+          <a href="#/create" data-nav="create">Start a campaign</a>
+          <a href="#/me" data-nav="me">My activity</a>
+        </nav>
+        <div class="wallet">
+          <span id="network-badge" class="network-badge hidden"></span>
+          <button id="wallet-button" class="btn btn-primary" type="button">Connect wallet</button>
+        </div>
+      </div>
+    </header>
+
+    <div id="network-banner" class="banner hidden" role="alert"></div>
+
+    <main id="view" class="container" tabindex="-1">
+      <p class="muted loading">Loading…</p>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer-inner">
+        <span>MileFund: funds are released milestone by milestone, only with backer approval.</span>
+        <span id="footer-contract"></span>
+      </div>
+    </footer>
+
+    <div id="toasts" class="toasts" aria-live="polite"></div>
+    <noscript><p class="container">MileFund requires JavaScript and a MetaMask-compatible wallet.</p></noscript>
+  </body>
+</html>
