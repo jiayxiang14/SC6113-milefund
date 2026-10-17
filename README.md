@@ -139,12 +139,15 @@ activity tab data* in MetaMask to reset its nonce cache.
 
 ### Hosting (Render)
 
-Create a Render *Web Service* with root directory `backend`, build command
-`pip install -r requirements.txt` and start command
-`gunicorn -w 1 --threads 8 -b 0.0.0.0:$PORT "app:create_app()"`. Set `RPC_URL`,
-`CONTRACT_ADDRESS`, `START_BLOCK` and `CONFIRMATIONS` as environment variables. Use a single
-worker so only one indexer thread runs. The SQLite file is rebuilt from chain events if the disk
-is reset, but uploaded metadata would be lost without a persistent disk.
+`render.yaml` is a Render Blueprint. After deploying to Sepolia and committing
+`deployments/11155111.json`: Render dashboard → **New → Blueprint** → select this repository.
+The service installs `backend/requirements.txt` and starts
+`gunicorn --chdir backend -w 1 --threads 8 "app:create_app()"` (a single worker so only one
+indexer thread runs).
+
+On the free plan the disk is ephemeral and the service sleeps after 15 minutes idle. Chain events
+are re-indexed automatically on start-up, but uploaded descriptions and proofs are lost on each
+restart unless a persistent disk is attached (paid plan; set `DATABASE_PATH` to a file on the disk).
 
 ## Testing
 

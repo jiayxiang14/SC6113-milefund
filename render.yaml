@@ -1,0 +1,21 @@
+# Render Blueprint: New > Blueprint > select this repository.
+# The service runs from the repository root so the backend can serve ../frontend and read
+# ../deployments/<chainId>.json. It only works against Sepolia (Render cannot reach a local Anvil).
+services:
+  - type: web
+    name: sc6113-milefund
+    runtime: python
+    plan: free
+    buildCommand: pip install -r backend/requirements.txt
+    # One worker so exactly one indexer thread runs; threads handle concurrent requests.
+    startCommand: gunicorn --chdir backend -w 1 --threads 8 -b 0.0.0.0:$PORT "app:create_app()"
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.13.11"
+      - key: RPC_URL
+        value: https://ethereum-sepolia-rpc.publicnode.com
+      - key: CONFIRMATIONS
+        value: "2"
+      - key: INDEX_CHUNK
+        value: "2000"
