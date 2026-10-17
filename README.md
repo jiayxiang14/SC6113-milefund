@@ -202,3 +202,5 @@ live Anvil chain.
 - Rounding in pro-rata refunds can leave a few wei in the contract.
 - Off-chain metadata depends on the backend being available (integrity is verifiable, availability is not).
 - The indexer polls one RPC endpoint; a production system would use a dedicated indexer.
+- The demo deployment uses Render's free plan, whose disk is ephemeral: descriptions and proofs
+  uploaded to the backend are lost when the service restarts (on-chain data is unaffected).
