@@ -127,9 +127,18 @@ activity tab data* in MetaMask to reset its nonce cache.
    ```bash
    cp .env.example .env    # set SEPOLIA_RPC_URL and ETHERSCAN_API_KEY
    source .env
-   forge script script/Deploy.s.sol --rpc-url sepolia --account milefund-deployer --broadcast --verify
+   forge create src/MilestoneCrowdfund.sol:MilestoneCrowdfund --rpc-url sepolia \
+     --account milefund-deployer --broadcast --verify --gas-limit 16000000
    ```
-   This writes `deployments/11155111.json` (address and start block).
+   Sepolia's current gas schedule charges far more for contract code than Foundry's local
+   simulation (about 15.4M gas versus 2.2M), so `forge script` under-estimates and the deployment
+   runs out of gas. `forge create` with an explicit limit, below the 16,777,216 per-transaction cap
+   (EIP-7825), avoids this. Check the requirement with
+   `cast estimate --rpc-url $SEPOLIA_RPC_URL --create $(forge inspect MilestoneCrowdfund bytecode)`.
+   Then record the deployment in `deployments/11155111.json`:
+   ```json
+   { "address": "<deployed address>", "chainId": 11155111, "startBlock": <deployment block> }
+   ```
 4. Run the backend against Sepolia:
    ```bash
    cd backend && cp .env.example .env
