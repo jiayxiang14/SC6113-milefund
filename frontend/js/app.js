@@ -271,12 +271,14 @@ function updateWalletUI() {
   if (!state.account) {
     button.textContent = hasWallet() ? "Connect wallet" : "Install MetaMask";
     button.title = "";
+    $("#switch-account").classList.add("hidden");
     netBadge.classList.add("hidden");
     banner.classList.add("hidden");
     return;
   }
   button.textContent = shortHash(state.account);
   button.title = `${state.account}\nClick to copy`;
+  $("#switch-account").classList.remove("hidden");
   netBadge.classList.remove("hidden");
   if (onCorrectNetwork()) {
     netBadge.className = "network-badge ok";
@@ -307,6 +309,17 @@ async function switchNetwork() {
       method: "wallet_addEthereumChain",
       params: [{ chainId: chainIdHex, chainName: "Anvil Local", rpcUrls: ["http://127.0.0.1:8545"], nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 } }],
     });
+  }
+}
+
+/** Re-open MetaMask's account picker so the user can connect and select another account. */
+async function switchAccount() {
+  try {
+    await window.ethereum.request({ method: "wallet_requestPermissions", params: [{ eth_accounts: {} }] });
+    await refreshWallet();
+    rerender();
+  } catch (e) {
+    if (e.code !== 4001) toast({ type: "error", title: "Could not switch account", body: friendlyError(e), timeout: 6000 });
   }
 }
 
@@ -1156,6 +1169,7 @@ async function boot() {
     await navigator.clipboard?.writeText(state.account).catch(() => {});
     toast({ title: "Address copied", body: state.account, timeout: 2500 });
   });
+  $("#switch-account").addEventListener("click", switchAccount);
 
   if (hasWallet()) {
     window.ethereum.on?.("accountsChanged", async () => {
