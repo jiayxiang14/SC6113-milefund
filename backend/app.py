@@ -65,7 +65,13 @@ def create_app(config: Config | None = None, chain: Chain | None = None, start_i
     app.json.sort_keys = False
 
     chain = chain or Chain(config.rpc_url, config.abi_path)
-    chain_id = chain.chain_id()
+    try:
+        chain_id = chain.chain_id()
+    except RequestException:
+        raise SystemExit(
+            f"Cannot reach the blockchain node at {config.rpc_url}. "
+            "Start `anvil` first for local use, or set RPC_URL in backend/.env to a Sepolia endpoint."
+        ) from None
     config.resolve_deployment(chain_id)
     chain.bind(config.contract_address)
     db = Database(config.database_path)
